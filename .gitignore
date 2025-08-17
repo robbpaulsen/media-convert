@@ -1,0 +1,26 @@
+# Conversion script output
+# This is the most important rule for your project. It prevents the
+# generated media files from being added to the repository.
+*_converted.*
+
+# PowerShell specific
+*.psd1.bak
+*.psm1.bak
+*.psess
+PSReadline/
+ConsoleHost_history.txt
+
+# Common editor/IDE folders
+.vscode/
+.vs/
+*.suo
+*.user
+
+# General OS generated files
+# Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
