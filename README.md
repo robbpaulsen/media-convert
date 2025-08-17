@@ -1,8 +1,10 @@
 # Convert-VideoOptimized: Script de PowerShell para Conversión de Medios
 
----
+<br>
 
-`Convert-VideoOptimized` es un script de PowerShell diseñado para simplificar la conversión de archivos de video y audio utilizando FFmpeg. Ofrece una interfaz interactiva en la consola para seleccionar el formato de salida y detecta automáticamente la aceleración de hardware disponible (específicamente NVIDIA NVENC) para optimizar el proceso de codificación.
+`Media-Convert.ps1` es un script de _PowerShell_ diseñado para simplificar la conversión de archivos de video y audio utilizando FFmpeg. 
+
+Ofrece una interfaz interactiva en la consola para seleccionar el formato de salida y detecta automáticamente la aceleración de hardware disponible (específicamente NVIDIA NVENC) para optimizar el proceso de codificación.
 
 <br>
 
@@ -60,59 +62,44 @@
 2.  **FFmpeg:** Debes tener FFmpeg instalado y su ejecutable (`ffmpeg.exe`) debe estar accesible a través del `PATH` del sistema.
     *   Puedes descargar FFmpeg desde su sitio web oficial. Se recomienda la versión "full build" de gyan.dev o BtbN.
 
-## 🚀 ¿Cómo Usar el Script?
+## 🚀 ¿Cómo Usarlo?
 
-1.  **Guarda el script:** Guarda el contenido del script como `Convert-VideoOptimize2.ps1` en tu computadora.
-
-2.  **Abre una terminal de PowerShell:** Navega hasta el directorio donde guardaste el script.
-
-3.  **Permitir la ejecución de scripts:** Es posible que necesites cambiar la política de ejecución de PowerShell para poder ejecutar scripts locales. Puedes hacerlo para la sesión actual con el siguiente comando:
+1.  **Guarda el script:** Guarda el contenido del script como `Convert-VideoOptimized.ps1` en tu computadora.
+2.  **Importante:** Abre el archivo `Convert-VideoOptimized.ps1` con un editor de texto y **elimina la última línea** (`Convert-VideoOptimized`). Esta línea es para pruebas y causará un error si se deja, ya que la función requiere parámetros.
+3.  **Abre una terminal de PowerShell:** Navega hasta el directorio donde guardaste el script.
+4.  **Permitir la ejecución de scripts (si es necesario):** Si es la primera vez que ejecutas un script local, es posible que necesites cambiar la política de ejecución de PowerShell. Puedes hacerlo para la sesión actual con el siguiente comando:
     ```powershell
     Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
     ```
 
-4.  **Ejecuta el script:** Hay dos formas principales de usarlo.
-
-    **Opción A: Modificando el archivo (más simple)**
-
-    Al final del archivo `Convert-VideoOptimize2.ps1`, modifica la última línea para que apunte a tu archivo de video y luego ejecuta el script.
-
+5.  **Carga la función en PowerShell:** Utiliza "dot sourcing" para cargar la función en tu sesión actual.
     ```powershell
-    # Al final del archivo, reemplaza la ruta de ejemplo
-    Convert-VideoOptimized2 -InputFile "C:\Ruta\A\Tu\Video.mkv"
+    . .\Convert-VideoOptimized.ps1
     ```
 
-    Luego, en la terminal, simplemente ejecuta:
+6.  **Ejecuta la conversión:** Llama a la función `Convert-VideoOptimized` con los parámetros necesarios. El script se encargará del resto.
     ```powershell
-    .\Convert-VideoOptimize2.ps1
+    # Conversión simple. El archivo de salida se generará automáticamente.
+    Convert-VideoOptimized -InputFile "C:\Ruta\A\Tu\Video.mkv"
+
+    # Especificando la ruta del archivo de salida.
+    Convert-VideoOptimized -InputFile "C:\Videos\mi_video.mkv" -OutputFile "C:\Videos\convertido.mp4"
     ```
 
-    **Opción B: Cargando la función (más flexible)**
+## 🔧 Parámetros
 
-    Carga la función en tu sesión actual de PowerShell y luego llámala con los parámetros que necesites.
-
-    ```powershell
-    # Cargar la función en la memoria de la sesión actual
-    . .\Convert-VideoOptimize2.ps1
-
-    # Llamar a la función con tu archivo de entrada
-    Convert-VideoOptimized2 -InputFile "C:\Videos\mi_video_original.mkv"
-
-    # También puedes especificar un archivo de salida
-    Convert-VideoOptimized2 -InputFile "C:\Videos\mi_video_original.mkv" -OutputFile "C:\Videos\convertido.mp4"
-    ```
-
-5.  **Sigue las instrucciones:** El script detectará tu hardware y te pedirá que elijas un formato de salida. Ingresa el número correspondiente y presiona `Enter`. ¡Listo!
+*   **-InputFile** (string, obligatorio): La ruta completa al archivo de video que deseas convertir.
+*   **-OutputFile** (string, opcional): La ruta completa donde se guardará el archivo convertido. Si no se especifica, el script generará un nombre de archivo automáticamente en el mismo directorio que el archivo de entrada.
 
 ## 🛠️ Funcionamiento Interno
 
 El script sigue estos pasos lógicos:
 
 1.  **Validación:** Comprueba que el archivo de entrada especificado exista.
-2.  **Detección de Hardware:** Ejecuta `ffmpeg -encoders` y `ffmpeg -decoders` para buscar cadenas de texto correspondientes a codificadores de hardware comunes (NVENC, QSV, AMF).
-3.  **Interacción con el Usuario:** Muestra un menú de opciones de conversión y espera la selección del usuario.
-4.  **Construcción del Comando:** Basado en la detección de hardware y la elección del usuario, ensambla dinámicamente los parámetros necesarios para FFmpeg en un array.
-5.  **Ejecución:** Llama a `ffmpeg` usando el operador de llamada (`&`) y el *splatting* de parámetros para pasar los argumentos de forma segura, y finalmente muestra el resultado de la conversión.
+2.  **Detección de Hardware:** Ejecuta `ffmpeg -encoders` para buscar la disponibilidad del codificador `h264_nvenc`.
+3.  **Selección de Codificador:** Elige `h264_nvenc` si está disponible para la codificación por hardware. De lo contrario, recurre a `libx264` para la codificación por software.
+4.  **Construcción del Comando:** Ensambla dinámicamente los parámetros necesarios para FFmpeg en un array, incluyendo la aceleración de decodificación (`-hwaccel cuda`) si se usa NVENC.
+5.  **Ejecución:** Llama a `ffmpeg` usando el operador de llamada (`&`) y el *splatting* de parámetros para pasar los argumentos de forma segura y muestra el resultado.
 
 ## 📄 Licencia
 
