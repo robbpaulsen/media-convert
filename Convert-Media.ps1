@@ -1,15 +1,21 @@
 <#
 .SYNOPSIS
-    Convierte archivos de video y audio a diferentes formatos, utilizando aceleración por hardware si está disponible.
+    Convierte archivos de video y audio a diferentes formatos, utilizando aceleración 
+    por hardware si está disponible.
 .DESCRIPTION
-    Este script utiliza FFmpeg para convertir archivos multimedia. Puede funcionar de forma interactiva (mostrando un menú) o de forma no interactiva a través de parámetros.
-    Detecta hardware NVIDIA (NVENC) para acelerar la codificación y decodificación de video, mejorando significativamente el rendimiento.
+    Este script utiliza FFmpeg para convertir archivos multimedia. Puede funcionar de 
+    forma interactiva (mostrando un menú) o de forma no interactiva a través de parámetros.
+    Detecta hardware NVIDIA (NVENC) para acelerar la codificación y decodificación de 
+    video, mejorando significativamente el rendimiento.
 .PARAMETER Path
     La ruta completa al archivo de entrada que se desea convertir. Este parámetro es obligatorio.
 .PARAMETER Type
-    El formato de salida deseado. Valores permitidos: mp4, webm, mp3, wav. Si no se especifica, el script mostrará un menú interactivo para elegir el formato.
+    El formato de salida deseado. Valores permitidos: mp4, webm, mp3, wav. Si no se especifica, 
+    el script mostrará un menú interactivo para elegir el formato.
 .PARAMETER Destination
-    La ruta de destino. Puede ser una carpeta (donde se guardará el archivo con un nombre autogenerado) o una ruta de archivo completa. Si no se especifica, el archivo convertido se guardará en la misma carpeta que el original.
+    La ruta de destino. Puede ser una carpeta (donde se guardará el archivo con un nombre 
+    autogenerado) o una ruta de archivo completa. Si no se especifica, el archivo convertido se
+    guardará en la misma carpeta que el original.
 .EXAMPLE
     # Modo interactivo (mostrará un menú)
     .\Convert-Media.ps1 -Path "C:\Videos\mi_video.mkv"
@@ -18,11 +24,12 @@
     .\Convert-Media.ps1 -Path "C:\Peliculas\video con espacios.mkv" -Type mp4
 .EXAMPLE
     # Convertir a MP3 y guardarlo en una carpeta específica
-    .\Convert-Media.ps1 -Path "C:\Musica\entrevista.wav" -Type mp3 -Destination "C:\Audio Convertido\"
+    .\Convert-Media.ps1 -Path "C:\Musica\entrevista.wav" -Type mp3 -Destination "C:\Audio Convertido"
 .EXAMPLE
     # Convertir a WebM y especificar el nombre y la ruta del archivo de salida
     .\Convert-Media.ps1 -Path "C:\Clips\gameplay.mp4" -Type webm -Destination "C:\Web\videos\gameplay_final.webm"
 #>
+
 [CmdletBinding(SupportsShouldProcess=$true)]
 param (
     [Parameter(Mandatory=$true, Position=0, HelpMessage="Ruta al archivo de video o audio a convertir.")]
@@ -49,7 +56,7 @@ $ffmpegPath = "ffmpeg"
 $ffprobePath = "ffprobe"
 
 # --- 1.5. Detectar el códec del video de entrada ---
-Write-Host "`n🕵️  Detectando códec del video de entrada..."
+Write-Host "`n🕵️  Detectando códec del video de entrada ..."
 $inputVideoCodec = ""
 try {
     # Obtener el nombre del códec del primer stream de video
@@ -64,7 +71,7 @@ try {
 }
 
 # --- 2. Detección de Hardware y Codificadores/Decodificadores Disponibles ---
-Write-Host "`n⏳ Realizando detección de hardware para FFmpeg..."
+Write-Host "`n⏳ Realizando detección de hardware para FFmpeg ..."
 
 $hardwareAccelerators = @()
 $encodersInfo = & $ffmpegPath -encoders 2>&1 | Out-String
