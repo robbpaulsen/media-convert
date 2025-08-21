@@ -10,37 +10,37 @@ Ofrece una interfaz interactiva en la consola para seleccionar el formato de sal
 
 ## Ejecutar el script
 
-![](assets/conersor-video-0.png)
+![](assets/conversor-video-0.png)
 
 <br>
 
 ## Se indica al usuario ingresar la ruta completa del archivo
 
-![](assets/conersor-video-1.png)
+![](assets/conversor-video-1.png)
 
 <br>
 
 ## Se indica la ruta
 
-![](assets/conersor-video-2.png)
+![](assets/conversor-video-2.png)
 
 <br>
 
 ## Se muestra a pantalla menu multi opcion para escoger
 
-![](assets/conersor-video-3.png)
+![](assets/conversor-video-3.png)
 
 <br>
 
 ## Se escoge la conversion numero `1`
 
-![](assets/conersor-video-4.png)
+![](assets/conversor-video-4.png)
 
 <br>
 
 ## Inicia la conversion
 
-![](assets/conersor-video-5.png)
+![](assets/conversor-video-5.png)
 
 <br>
 
