@@ -1,3 +1,10 @@
+param (
+    [Parameter(Mandatory=$true, HelpMessage="Ruta completa al archivo de video de entrada.")]
+    [string]$InputFilePath,
+    [Parameter(Mandatory=$false, HelpMessage="Ruta completa para el archivo de salida JSON. Si no se especifica, se genera junto al archivo de entrada.")]
+    [string]$OutputPath
+)
+
 function Get-HardwareInfo {
 	<#
 	.SYNOPSIS
@@ -9,7 +16,7 @@ function Get-HardwareInfo {
 	.OUTPUTS
     	PSCustomObject con propiedades: CPU, RAM, GPU y VRAM.
 	.EXAMPLE
-		PS> .\pull-urinfo.ps1 -Path 'Multimedia-File.flacc' -Output 'Multimedia-File-Output.json'
+		PS> .\Pull-Info.ps1 -InputFilePath 'C:\ruta\a\tu\video.mp4' -OutputPath 'C:\ruta\a\tu\salida.json'
 	.LINK
 		https://github.com/robbpaulsen/media-convert
 	.NOTES
@@ -136,12 +143,6 @@ function Get-MediaInfo {
 
 # --- Lógica principal del script ---
 
-# Parámetros del script. Puedes pasar la ruta del archivo al ejecutar.
-param (
-    [Parameter(Mandatory=$true, HelpMessage="Ruta completa al archivo de video de entrada.")]
-    [string]$InputFilePath
-)
-
 # 1. Obtener la información del hardware
 $hardwareData = Get-HardwareInfo
 
@@ -159,16 +160,20 @@ if ($hardwareData -and $mediaData) {
         SourceFile = $InputFilePath
     }
 
-    # Crear el nombre del archivo de salida
-    $outputFileName = [System.IO.Path]::GetFileNameWithoutExtension($InputFilePath) + "_metadata.json"
-    $outputPath = Join-Path -Path (Split-Path $InputFilePath) -ChildPath $outputFileName
+    # Determinar la ruta de salida
+    if (-not [string]::IsNullOrEmpty($OutputPath)) {
+        $finalOutputPath = $OutputPath
+    } else {
+        $outputFileName = [System.IO.Path]::GetFileNameWithoutExtension($InputFilePath) + "_metadata.json"
+        $finalOutputPath = Join-Path -Path (Split-Path $InputFilePath) -ChildPath $outputFileName
+    }
 
     # Convertir el objeto a JSON y guardarlo en el archivo
-    $combinedData | ConvertTo-Json -Depth 5 | Set-Content $outputPath
+    $combinedData | ConvertTo-Json -Depth 5 | Set-Content -Path $finalOutputPath
 
     Write-Host ""
     Write-Host "¡Operación completada con éxito!" -ForegroundColor Cyan
-    Write-Host "El archivo de metadatos se ha guardado en: $outputPath" -ForegroundColor Yellow
+    Write-Host "El archivo de metadatos se ha guardado en: $finalOutputPath" -ForegroundColor Yellow
 } else {
     Write-Host "No se pudo completar el proceso debido a errores anteriores." -ForegroundColor Red
 }
