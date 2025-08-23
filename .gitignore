@@ -24,3 +24,7 @@ $RECYCLE.BIN/
 
 # macOS
 .DS_Store
+
+# test local files
+test-output.json
+song.mp3
